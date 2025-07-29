@@ -10,13 +10,16 @@ DB_NAME = "hotel.db"
 # Data Functions
 # ----------------------------------------
 
+
 def get_owner_hotels(owner_id):
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
-    cur.execute("SELECT hotel_id, name, location, is_approved FROM hotels WHERE owner_id = ?", (owner_id,))
+    cur.execute(
+        "SELECT hotel_id, name, location, is_approved FROM hotels WHERE owner_id = ?", (owner_id,))
     hotels = cur.fetchall()
     conn.close()
     return hotels
+
 
 def get_owner_bookings(owner_id):
     conn = sqlite3.connect(DB_NAME)
@@ -33,23 +36,29 @@ def get_owner_bookings(owner_id):
     conn.close()
     return data
 
+
 def approve_booking(booking_id):
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
-    cur.execute("UPDATE bookings SET status = 'approved' WHERE booking_id = ?", (booking_id,))
+    cur.execute(
+        "UPDATE bookings SET status = 'approved' WHERE booking_id = ?", (booking_id,))
     conn.commit()
     conn.close()
     messagebox.showinfo("Success", f"Booking ID {booking_id} approved.")
 
+
 def reject_booking(booking_id):
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
-    cur.execute("UPDATE bookings SET status = 'rejected' WHERE booking_id = ?", (booking_id,))
+    cur.execute(
+        "UPDATE bookings SET status = 'rejected' WHERE booking_id = ?", (booking_id,))
     # free the room
-    cur.execute("SELECT room_id FROM bookings WHERE booking_id = ?", (booking_id,))
+    cur.execute(
+        "SELECT room_id FROM bookings WHERE booking_id = ?", (booking_id,))
     room = cur.fetchone()
     if room:
-        cur.execute("UPDATE rooms SET is_available = 1 WHERE room_id = ?", (room[0],))
+        cur.execute(
+            "UPDATE rooms SET is_available = 1 WHERE room_id = ?", (room[0],))
     conn.commit()
     conn.close()
     messagebox.showinfo("Rejected", f"Booking ID {booking_id} rejected.")
@@ -58,20 +67,26 @@ def reject_booking(booking_id):
 # Hotel/Room Functions
 # ----------------------------------------
 
+
 def add_hotel(name, location, owner_id):
     if not name or not location:
-        messagebox.showwarning("Input Error", "Hotel name and location are required.")
+        messagebox.showwarning(
+            "Input Error", "Hotel name and location are required.")
         return
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
-    cur.execute("INSERT INTO hotels (name, location, owner_id) VALUES (?, ?, ?)", (name, location, owner_id))
+    cur.execute("INSERT INTO hotels (name, location, owner_id) VALUES (?, ?, ?)",
+                (name, location, owner_id))
     conn.commit()
     conn.close()
-    messagebox.showinfo("Success", "Hotel added successfully. Awaiting admin approval.")
+    messagebox.showinfo(
+        "Success", "Hotel added successfully. Awaiting admin approval.")
+
 
 def add_room(hotel_id, room_type, price):
     if not room_type or not price:
-        messagebox.showwarning("Input Error", "Room type and price are required.")
+        messagebox.showwarning(
+            "Input Error", "Room type and price are required.")
         return
     try:
         price = float(price)
@@ -80,7 +95,8 @@ def add_room(hotel_id, room_type, price):
         return
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
-    cur.execute("INSERT INTO rooms (hotel_id, type, price) VALUES (?, ?, ?)", (hotel_id, room_type, price))
+    cur.execute("INSERT INTO rooms (hotel_id, type, price) VALUES (?, ?, ?)",
+                (hotel_id, room_type, price))
     conn.commit()
     conn.close()
     messagebox.showinfo("Success", "Room added successfully.")
@@ -88,6 +104,7 @@ def add_room(hotel_id, room_type, price):
 # ----------------------------------------
 # GUI Helpers
 # ----------------------------------------
+
 
 def show_add_hotel_window(owner_id, refresh_callback):
     win = tk.Toplevel()
@@ -108,6 +125,7 @@ def show_add_hotel_window(owner_id, refresh_callback):
         refresh_callback()
 
     tk.Button(win, text="Add Hotel", command=on_add).pack(pady=10)
+
 
 def show_add_room_window(hotel_id):
     win = tk.Toplevel()
@@ -132,16 +150,19 @@ def show_add_room_window(hotel_id):
 # MAIN PANEL
 # ----------------------------------------
 
+
 def show_owner_panel(owner):
     root = tk.Tk()
     root.title("Hotel Owner Panel")
     root.geometry("750x600")
 
-    tk.Label(root, text=f"Welcome {owner[1]} (Owner)", font=("Arial", 14)).pack(pady=10)
+    tk.Label(root, text=f"Welcome {owner[1]} (Owner)", font=(
+        "Arial", 14)).pack(pady=10)
 
     # ----------- Hotel Table -----------
     tk.Label(root, text="Your Hotels").pack()
-    hotel_tree = ttk.Treeview(root, columns=('ID', 'Name', 'Location', 'Approved'), show='headings')
+    hotel_tree = ttk.Treeview(root, columns=(
+        'ID', 'Name', 'Location', 'Approved'), show='headings')
     for col in ('ID', 'Name', 'Location', 'Approved'):
         hotel_tree.heading(col, text=col)
     hotel_tree.pack(pady=5, fill='x')
@@ -162,14 +183,17 @@ def show_owner_panel(owner):
             hotel_id = hotel_tree.item(selected[0])['values'][0]
             show_add_room_window(hotel_id)
         else:
-            messagebox.showwarning("Select Hotel", "Please select a hotel first.")
+            messagebox.showwarning(
+                "Select Hotel", "Please select a hotel first!!")
 
     tk.Button(root, text="Add Hotel", command=on_add_hotel).pack(pady=2)
-    tk.Button(root, text="Add Room to Selected Hotel", command=on_add_room).pack(pady=2)
+    tk.Button(root, text="Add Room to Selected Hotel",
+              command=on_add_room).pack(pady=2)
 
     # ----------- Booking Approval Section -----------
     tk.Label(root, text="Room Booking Requests").pack(pady=10)
-    booking_tree = ttk.Treeview(root, columns=('ID', 'User', 'Hotel', 'Room', 'CheckIn', 'CheckOut', 'Status'), show='headings')
+    booking_tree = ttk.Treeview(root, columns=(
+        'ID', 'User', 'Hotel', 'Room', 'CheckIn', 'CheckOut', 'Status'), show='headings')
     for col in ('ID', 'User', 'Hotel', 'Room', 'CheckIn', 'CheckOut', 'Status'):
         booking_tree.heading(col, text=col)
     booking_tree.pack(pady=5, fill='both', expand=True)
@@ -194,8 +218,10 @@ def show_owner_panel(owner):
             reject_booking(booking_id)
             refresh_bookings()
 
-    tk.Button(root, text="Approve Selected Booking", command=on_approve_booking).pack(pady=2)
-    tk.Button(root, text="Reject Selected Booking", command=on_reject_booking).pack(pady=2)
+    tk.Button(root, text="✅Approve Selected Booking",
+              command=on_approve_booking).pack(pady=2)
+    tk.Button(root, text="❌Reject Selected Booking",
+              command=on_reject_booking).pack(pady=2)
 
     def on_exit():
         from login_register import show_login_register
@@ -207,4 +233,3 @@ def show_owner_panel(owner):
     refresh_hotels()
     refresh_bookings()
     root.mainloop()
-
