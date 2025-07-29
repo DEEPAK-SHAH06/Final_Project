@@ -76,7 +76,7 @@ def show_login_register():
 
     # Footer
     tk.Label(root, text="🔒 Secure access to hotel booking system", font=("Arial", 9),
-             bg="#f7f9fc", fg="#666").pack(side="bottom", pady=15)
+             bg="#f7f9fc", fg="#3e64ff").pack(side="bottom", pady=15)
 
     root.mainloop()
 
