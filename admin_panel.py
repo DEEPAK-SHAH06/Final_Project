@@ -9,10 +9,12 @@ DB_NAME = "hotel.db"
 def get_pending_hotels():
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
-    cur.execute("SELECT hotel_id, name, location FROM hotels WHERE is_approved = 0")
+    cur.execute(
+        "SELECT hotel_id, name, location FROM hotels WHERE is_approved = 0")
     data = cur.fetchall()
     conn.close()
     return data
+
 
 def get_all_hotels():
     conn = sqlite3.connect(DB_NAME)
@@ -21,6 +23,7 @@ def get_all_hotels():
     data = cur.fetchall()
     conn.close()
     return data
+
 
 def get_all_bookings():
     conn = sqlite3.connect(DB_NAME)
@@ -35,6 +38,7 @@ def get_all_bookings():
     data = cur.fetchall()
     conn.close()
     return data
+
 
 def get_user_bookings_by_email(email):
     conn = sqlite3.connect(DB_NAME)
@@ -51,13 +55,16 @@ def get_user_bookings_by_email(email):
     conn.close()
     return data
 
+
 def approve_hotel(hotel_id):
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
-    cur.execute("UPDATE hotels SET is_approved = 1 WHERE hotel_id = ?", (hotel_id,))
+    cur.execute(
+        "UPDATE hotels SET is_approved = 1 WHERE hotel_id = ?", (hotel_id,))
     conn.commit()
     conn.close()
     messagebox.showinfo("Hotel Approved", f"Hotel ID {hotel_id} approved!")
+
 
 def reject_hotel(hotel_id):
     conn = sqlite3.connect(DB_NAME)
@@ -67,10 +74,12 @@ def reject_hotel(hotel_id):
     conn.close()
     messagebox.showinfo("Hotel Rejected", f"Hotel ID {hotel_id} deleted!")
 
+
 def update_hotel(hotel_id, name, location):
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
-    cur.execute("UPDATE hotels SET name = ?, location = ? WHERE hotel_id = ?", (name, location, hotel_id))
+    cur.execute("UPDATE hotels SET name = ?, location = ? WHERE hotel_id = ?",
+                (name, location, hotel_id))
     conn.commit()
     conn.close()
     messagebox.showinfo("Hotel Updated", "Hotel details updated.")
@@ -83,7 +92,8 @@ def show_admin_panel(admin_user):
     root.geometry("900x650")
     root.configure(bg="#f1f3f6")
 
-    title = tk.Label(root, text=f"Welcome {admin_user[1]} (Admin)", font=("Helvetica", 16, "bold"), bg="#3E64FF", fg="white", pady=10)
+    title = tk.Label(root, text=f"Welcome {admin_user[1]} (Admin)", font=(
+        "Helvetica", 16, "bold"), bg="#3E64FF", fg="white", pady=10)
     title.pack(fill="x")
 
     notebook = ttk.Notebook(root)
@@ -97,7 +107,8 @@ def show_admin_panel(admin_user):
     # ---------- Tab 1: Pending Hotels ----------
     tab1 = tk.Frame(notebook, bg="#ffffff")
     notebook.add(tab1, text="Pending Hotels")
-    tree1 = ttk.Treeview(tab1, columns=("ID", "Name", "Location"), show="headings")
+    tree1 = ttk.Treeview(tab1, columns=(
+        "ID", "Name", "Location"), show="headings")
     for col in ("ID", "Name", "Location"):
         tree1.heading(col, text=col)
         tree1.column(col, width=150)
@@ -111,7 +122,8 @@ def show_admin_panel(admin_user):
     # ---------- Tab 2: All Bookings ----------
     tab2 = tk.Frame(notebook, bg="#ffffff")
     notebook.add(tab2, text="All Bookings")
-    tree2 = ttk.Treeview(tab2, columns=("ID", "User", "Hotel", "Room", "In", "Out", "Status"), show="headings")
+    tree2 = ttk.Treeview(tab2, columns=(
+        "ID", "User", "Hotel", "Room", "In", "Out", "Status"), show="headings")
     for col in ("ID", "User", "Hotel", "Room", "In", "Out", "Status"):
         tree2.heading(col, text=col)
         tree2.column(col, width=120)
@@ -120,20 +132,24 @@ def show_admin_panel(admin_user):
     # ---------- Tab 3: Search by Email ----------
     tab3 = tk.Frame(notebook, bg="#ffffff")
     notebook.add(tab3, text="Search User Bookings")
-    tk.Label(tab3, text="Enter User Email:", font=("Arial", 11), bg="white").pack(pady=10)
+    tk.Label(tab3, text="Enter User Email:", font=(
+        "Arial", 11), bg="white").pack(pady=10)
     email_entry = tk.Entry(tab3, width=40)
     email_entry.pack(pady=5)
-    tree3 = ttk.Treeview(tab3, columns=("ID", "User", "Hotel", "Room", "In", "Out", "Status"), show="headings")
+    tree3 = ttk.Treeview(tab3, columns=(
+        "ID", "User", "Hotel", "Room", "In", "Out", "Status"), show="headings")
     for col in ("ID", "User", "Hotel", "Room", "In", "Out", "Status"):
         tree3.heading(col, text=col)
         tree3.column(col, width=110)
     tree3.pack(pady=10, padx=10, fill="both", expand=True)
-    tk.Button(tab3, text="🔍 Search Bookings", bg="#007bff", fg="black", command=lambda: search_user_bookings()).pack(pady=5)
+    tk.Button(tab3, text="🔍 Search Bookings", bg="#007bff", fg="white",
+              command=lambda: search_user_bookings()).pack(pady=5)
 
     # ---------- Tab 4: Manage All Hotels ----------
     tab4 = tk.Frame(notebook, bg="#ffffff")
     notebook.add(tab4, text="Manage Hotels")
-    tree4 = ttk.Treeview(tab4, columns=("ID", "Name", "Location", "Approved"), show="headings")
+    tree4 = ttk.Treeview(tab4, columns=(
+        "ID", "Name", "Location", "Approved"), show="headings")
     for col in ("ID", "Name", "Location", "Approved"):
         tree4.heading(col, text=col)
         tree4.column(col, width=150)
@@ -154,10 +170,12 @@ def show_admin_panel(admin_user):
         loc_entry = tk.Entry(edit_win)
         loc_entry.insert(0, hotel[2])
         loc_entry.pack(pady=5)
-        tk.Button(edit_win, text="Save", command=lambda: [update_hotel(hotel[0], name_entry.get(), loc_entry.get()), edit_win.destroy(), refresh_all_hotels()]).pack(pady=10)
+        tk.Button(edit_win, text="Save", command=lambda: [update_hotel(hotel[0], name_entry.get(
+        ), loc_entry.get()), edit_win.destroy(), refresh_all_hotels()]).pack(pady=10)
 
-    tk.Button(tab4, text="✏️ Edit Selected", bg="#ffc107", command=on_edit_hotel).pack(pady=5)
-    tk.Button(tab4, text="🗑 Delete Selected", bg="#dc3545", fg="black",
+    tk.Button(tab4, text="✏️ Edit Selected", bg="#ffc107",
+              command=on_edit_hotel).pack(pady=5)
+    tk.Button(tab4, text="🗑 Delete Selected", bg="#dc3545", fg="white",
               command=lambda: reject_hotel(tree4.item(tree4.selection()[0])["values"][0]) if tree4.selection() else None).pack(pady=5)
 
     # ---------- Refresh Functions ----------
@@ -193,4 +211,3 @@ def show_admin_panel(admin_user):
     refresh_all_hotels()
 
     root.mainloop()
-
