@@ -114,9 +114,9 @@ def show_admin_panel(admin_user):
         tree1.column(col, width=150)
     tree1.pack(pady=10, padx=10, fill="both", expand=True)
 
-    tk.Button(tab1, text="✅ Approve Selected", bg="#28a745", fg="black",
+    tk.Button(tab1, text="✅ Approve Selected", bg="#28a745", fg="white",
               command=lambda: approve_hotel(tree1.item(tree1.selection()[0])["values"][0]) if tree1.selection() else None).pack(pady=5)
-    tk.Button(tab1, text="❌ Reject Selected", bg="#dc3545", fg="black",
+    tk.Button(tab1, text="❌ Reject Selected", bg="#dc3545", fg="white",
               command=lambda: reject_hotel(tree1.item(tree1.selection()[0])["values"][0]) if tree1.selection() else None).pack(pady=5)
 
     # ---------- Tab 2: All Bookings ----------
@@ -173,9 +173,9 @@ def show_admin_panel(admin_user):
         tk.Button(edit_win, text="Save", command=lambda: [update_hotel(hotel[0], name_entry.get(
         ), loc_entry.get()), edit_win.destroy(), refresh_all_hotels()]).pack(pady=10)
 
-    tk.Button(tab4, text="✏️ Edit Selected", bg="#ffc107",
+    tk.Button(tab4, text="✏️ Edit Selected", bg="#ffc107", fg="black",
               command=on_edit_hotel).pack(pady=5)
-    tk.Button(tab4, text="🗑 Delete Selected", bg="#dc3545", fg="white",
+    tk.Button(tab4, text="🗑 Delete Selected", bg="#dc3545", fg="black",
               command=lambda: reject_hotel(tree4.item(tree4.selection()[0])["values"][0]) if tree4.selection() else None).pack(pady=5)
 
     # ---------- Refresh Functions ----------
