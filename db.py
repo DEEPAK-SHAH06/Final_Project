@@ -5,7 +5,7 @@ def create_tables():
     conn = sqlite3.connect("hotel.db")
     cur = conn.cursor()
 
-    # Users
+    # Users Table
     cur.execute('''
         CREATE TABLE IF NOT EXISTS users (
             user_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -16,7 +16,7 @@ def create_tables():
         )
     ''')
 
-    # Hotels
+    # Hotels Table
     cur.execute('''
         CREATE TABLE IF NOT EXISTS hotels (
             hotel_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -28,7 +28,7 @@ def create_tables():
         )
     ''')
 
-    # Rooms
+    # Rooms Table
     cur.execute('''
         CREATE TABLE IF NOT EXISTS rooms (
             room_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -40,7 +40,7 @@ def create_tables():
         )
     ''')
 
-    # Bookings
+    # Bookings Table
     cur.execute('''
         CREATE TABLE IF NOT EXISTS bookings (
             booking_id INTEGER PRIMARY KEY AUTOINCREMENT,
